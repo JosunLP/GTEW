@@ -1,3 +1,5 @@
+import PouchDB from "pouchdb";
+
 /**
  * Local db
  * @class LocalDb
@@ -17,7 +19,15 @@ export class LocalDb {
 	 */
 	private static instance: LocalDb;
 
+	/**
+	 * Local db key of local db
+	 */
 	private readonly LOCAL_DB_KEY: string = "gtew_";
+
+	/**
+	 * Local db of local db
+	 */
+	private LOCAL_DB: PouchDB.Database = new PouchDB("gtew");
 
 	/**
 	 * Gets instance
@@ -57,12 +67,13 @@ export class LocalDb {
 	 * LocalDb.getInstance().get('key');
 	 */
 	public get(key: string): string {
-		let result: string;
-		try {
-			result = <string>localStorage.getItem(this.LOCAL_DB_KEY + key);
-		} catch (error) {
-			result = "DB mapping error: The key does not exist.";
-		}
+		let result: string = "";
+		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key).catch(() => {
+			return { value: "" };
+		})
+		.then((doc) => {
+			result = <string>doc.value;
+		});
 		return result;
 	}
 
@@ -78,11 +89,16 @@ export class LocalDb {
 	 * LocalDb.getInstance().set('key', 'value');
 	 */
 	public set(key: string, value: string): void {
-		try {
-			this.remove(this.LOCAL_DB_KEY + key);
-		} catch (err) {}
+		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
+			.then((doc) => {
+				this.LOCAL_DB.remove(doc);
+			})
+			.catch();
 
-		localStorage.setItem(this.LOCAL_DB_KEY + key, value);
+		this.LOCAL_DB.put({
+			_id: this.LOCAL_DB_KEY + key,
+			value: value,
+		});
 	}
 
 	/**
@@ -96,11 +112,11 @@ export class LocalDb {
 	 * LocalDb.getInstance().remove('key');
 	 */
 	public remove(key: string): void {
-		try {
-			localStorage.removeItem(this.LOCAL_DB_KEY + key);
-		} catch (err) {
-			console.error(err);
-		}
+		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
+			.then((doc) => {
+				this.LOCAL_DB.remove(doc);
+			})
+			.catch();
 	}
 
 	/**
@@ -113,11 +129,8 @@ export class LocalDb {
 	 * LocalDb.getInstance().clear();
 	 */
 	public clear(): void {
-		try {
-			localStorage.clear();
-		} catch (err) {
-			console.error(err);
-		}
+		this.LOCAL_DB.destroy();
+		this.LOCAL_DB = new PouchDB("gtew");
 	}
 
 	/**
@@ -126,13 +139,13 @@ export class LocalDb {
 	 */
 	public getKeys(): string[] {
 		const keys: string[] = [];
-		for (let i = 0; i < localStorage.length; i++) {
-			let key = <string>localStorage.key(i);
-			if (key.startsWith(this.LOCAL_DB_KEY)) {
-				key = key.replace(this.LOCAL_DB_KEY, "");
-				keys.push(key);
-			}
-		}
+		this.LOCAL_DB.getIndexes().then((result) => {
+			result.indexes.forEach((index) => {
+				if (index.name.startsWith(this.LOCAL_DB_KEY)) {
+					keys.push(index.name.replace(this.LOCAL_DB_KEY, ""));
+				}
+			});
+		});
 		return keys;
 	}
 }
