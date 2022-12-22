@@ -1,4 +1,5 @@
-import GTEW from "../dist/gtew.js";
+import GTEW from "../../dist/gtew.js";
+
 
 GTEW.getInstance();
 

@@ -66,14 +66,16 @@ export class LocalDb {
 	 * @example
 	 * LocalDb.getInstance().get('key');
 	 */
-	public get(key: string): string {
+	public get(key: string): string	 {
 		let result: string = "";
-		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key).catch(() => {
-			return { value: "" };
-		})
-		.then((doc) => {
-			result = <string>doc.value;
-		});
+		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
+			.catch(() => {
+				return { value: "" };
+			})
+			.then((doc) => {
+				// @ts-ignore
+				result = doc.value;
+			});
 		return result;
 	}
 
