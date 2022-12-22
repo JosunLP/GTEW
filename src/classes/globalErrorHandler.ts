@@ -85,6 +85,11 @@ export class GlobalErrorHandler {
 		}
 	}
 
+	/**
+	 * Errors to error event
+	 * @param error
+	 * @returns to error event
+	 */
 	private errorToErrorEvent(error: Error): ErrorEvent {
 		return {
 			message: error.message,

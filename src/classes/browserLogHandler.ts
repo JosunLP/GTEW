@@ -99,6 +99,10 @@ export class BrowserLogHandler {
 		);
 	}
 
+	/**
+	 * Gets logs
+	 * @returns logs
+	 */
 	public async getLogs(): Promise<Logfile[]> {
 		const logFiles: Logfile[] = [];
 		const logFileNames = this.db.getKeys();
