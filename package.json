@@ -7,7 +7,8 @@
   "type": "module",
   "types": "./dist/gtew.d.ts",
   "scripts": {
-    "test": "tsc ./tests/*.ts --outDir ./tests/ --target esnext --module esnext && node ./tests/error.test.js"
+    "test": "tsc ./tests/error.test.ts --outDir ./tests/ --target esnext --module esnext && node ./tests/error.test.js",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,7 @@
   },
   "homepage": "https://github.com/JosunLP/GTEW#readme",
   "devDependencies": {
-    "@types/node": "^18.11.15",
+    "@types/node": "^18.11.17",
     "@types/pouchdb": "^6.4.0",
     "typescript": "^4.9.4"
   },

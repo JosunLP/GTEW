@@ -93,7 +93,7 @@ export class GlobalErrorHandler {
 	private errorToErrorEvent(error: Error): ErrorEvent {
 		return {
 			message: error.message,
-			filename: "",
+			filename: "Unknown",
 			lineno: 0,
 			colno: 0,
 			error: error,
