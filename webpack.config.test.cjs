@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-	entry: './src/gtew.ts',
+	entry: './tests/error.ts',
 	devtool: 'source-map',
 	mode: 'production',
 	module: {
@@ -12,21 +12,17 @@ module.exports = {
 				exclude: [
 					/node_modules/,
 					/dist/,
-					/tests/
+					/src/
 				],
 			},
 		],
 	},
 	resolve: {
-		extensions: ['.tsx', '.ts'],
+		extensions: ['.tsx', '.ts', '.js'],
 		modules: ['node_modules']
 	},
 	output: {
-		filename: 'gtew.js',
-		library: {
-			name: 'gtew',
-			type: 'module',
-		},
-		path: path.resolve(__dirname, 'dist'),
-	}
+		filename: 'error.js',
+		path: path.resolve(__dirname, 'tests'),
+	},
 };

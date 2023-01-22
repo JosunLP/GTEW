@@ -63,13 +63,12 @@ export class BrowserLogHandler {
 	 * @returns log file
 	 */
 	private getLogFile(name: string): Logfile {
-		try {
-			const logFile = JSON.parse(this.db.get(name)) as Logfile;
+		if (this.db.get(name)) {
+			const logFile = this.db.get(name)! as Logfile;
 			return logFile;
-		} catch (error) {
-			const logFileName = this.getLogFileName();
-			return new Logfile(logFileName, "", new Date());
 		}
+		const logFileName = this.getLogFileName();
+		return new Logfile(logFileName, "", new Date());
 	}
 
 	/**

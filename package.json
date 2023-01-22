@@ -8,7 +8,7 @@
   "types": "./dist/gtew.d.ts",
   "scripts": {
     "build": "npm run build-main && npm run build-test",
-    "build-test": "tsc ./tests/backend/error.test.ts --outDir ./tests/backend/ --target esnext --module esnext && tsc ./tests/frontend/error.ts --outDir ./tests/frontend/ --target esnext --module esnext",
+    "build-test": "webpack --config ./webpack.config.test.cjs",
     "build-main": "webpack --config ./webpack.config.cjs",
     "run-test": "node ./tests/backend/error.test.js"
   },
@@ -24,14 +24,24 @@
     "errorhandler",
     "typescript"
   ],
-  "author": "Jonas Pfalzgraf <info@josunlp.de>",
+  "author": {
+    "name": "Jonas Pfalzgraf",
+    "email": "info@josunlp.de",
+    "url": "https://josunlp.de"
+  },
+  "contributors": [
+    {
+      "name": "Jonas Pfalzgraf",
+      "email": "info@josunlp.de"
+    }
+  ],
+  "funding": "https://ko-fi.com/josunlp",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/JosunLP/GTEW/issues"
   },
   "homepage": "https://github.com/JosunLP/GTEW#readme",
   "devDependencies": {
-    "@types/pouchdb": "^6.4.0",
     "@types/node": "^18.11.18",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
@@ -39,7 +49,6 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "pouchdb": "^8.0.0",
     "simple-toast-messages": "^1.0.2"
   }
 }

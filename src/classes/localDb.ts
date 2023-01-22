@@ -1,11 +1,12 @@
-//@ts-ignore
-import PouchDB from "pouchdb";
+import { Logfile } from "./../models/logfile";
+import { DbEntry } from "./../types/dbEntry";
+import { Database } from "../types/database";
 
 /**
  * Local db
  * @class LocalDb
  * @example
- * import { LocalDb } from 'gtew';
+ * import { LocalDb, GTEW } from 'gtew';
  * LocalDb.getInstance
  * @description
  * Local db
@@ -21,14 +22,9 @@ export class LocalDb {
 	private static instance: LocalDb;
 
 	/**
-	 * Local db key of local db
-	 */
-	private readonly LOCAL_DB_KEY: string = "gtew_";
-
-	/**
 	 * Local db of local db
 	 */
-	private LOCAL_DB: PouchDB.Database = new PouchDB("gtew");
+	private readonly LOCAL_DB_STORAGE_KEY: string = "gtew";
 
 	/**
 	 * Gets instance
@@ -57,26 +53,55 @@ export class LocalDb {
 	private constructor() {}
 
 	/**
-	 * Gets value from localDb
-	 * @param key
-	 * @returns
+	 * Creates db
 	 * @memberof LocalDb
-	 * @method get
-	 * @public
-	 * @returns {string}
+	 * @method createDb
+	 * @private
+	 * @returns {void}
 	 * @example
-	 * LocalDb.getInstance().get('key');
+	 * LocalDb.getInstance().createDb();
 	 */
-	public get(key: string): string {
-		let result: string = "";
-		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
-			.catch(() => {
-				return { value: "" };
-			})
-			.then((doc: any) => {
-				// @ts-ignore
-				result = doc.value;
+	private createDb(): void {
+		window.localStorage.setItem(this.LOCAL_DB_STORAGE_KEY, "[]");
+	}
+
+	/**
+	 * Gets all
+	 * @returns all
+	 * @memberof LocalDb
+	 * @method getAll
+	 * @public
+	 * @returns {Logfile[]}
+	 * @example
+	 * LocalDb.getInstance().getAll();
+	 */
+	public getAll(): Logfile[] {
+		let result: Logfile[] = [];
+		try {
+			const db = JSON.parse(
+				window.localStorage.getItem(this.LOCAL_DB_STORAGE_KEY)!
+			);
+			db.forEach((dbEntry: DbEntry) => {
+				result.push(dbEntry.data);
 			});
+		} catch (error) {
+			this.createDb();
+			result = [];
+		}
+		return result;
+	}
+
+	public get(key: string): Logfile | false {
+		let result: Logfile | false = false;
+		try {
+			const db = JSON.parse(
+				window.localStorage.getItem(this.LOCAL_DB_STORAGE_KEY)!
+			);
+			result = db.find((item: DbEntry) => item.id === key).data;
+		} catch (error) {
+			this.createDb();
+			result = false;
+		}
 		return result;
 	}
 
@@ -91,17 +116,20 @@ export class LocalDb {
 	 * @example
 	 * LocalDb.getInstance().set('key', 'value');
 	 */
-	public set(key: string, value: string): void {
-		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
-			.then((doc: any) => {
-				this.LOCAL_DB.remove(doc);
-			})
-			.catch();
-
-		this.LOCAL_DB.put({
-			_id: this.LOCAL_DB_KEY + key,
-			value: value,
-		});
+	public set(key: string, value: Logfile): void {
+		let db: Database = [];
+		try {
+			db = JSON.parse(
+				window.localStorage.getItem(this.LOCAL_DB_STORAGE_KEY)!
+			);
+		} catch (error) {
+			this.createDb();
+		}
+		db.push({ id: key, data: value } as DbEntry);
+		window.localStorage.setItem(
+			this.LOCAL_DB_STORAGE_KEY,
+			JSON.stringify(db)
+		);
 	}
 
 	/**
@@ -115,11 +143,19 @@ export class LocalDb {
 	 * LocalDb.getInstance().remove('key');
 	 */
 	public remove(key: string): void {
-		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
-			.then((doc: any) => {
-				this.LOCAL_DB.remove(doc);
-			})
-			.catch();
+		let db: Database = [];
+		try {
+			db = JSON.parse(
+				window.localStorage.getItem(this.LOCAL_DB_STORAGE_KEY)!
+			);
+		} catch (error) {
+			this.createDb();
+		}
+		db = db.filter((item: DbEntry) => item.id !== key);
+		window.localStorage.setItem(
+			this.LOCAL_DB_STORAGE_KEY,
+			JSON.stringify(db)
+		);
 	}
 
 	/**
@@ -132,8 +168,8 @@ export class LocalDb {
 	 * LocalDb.getInstance().clear();
 	 */
 	public clear(): void {
-		this.LOCAL_DB.destroy();
-		this.LOCAL_DB = new PouchDB("gtew");
+		window.localStorage.removeItem(this.LOCAL_DB_STORAGE_KEY);
+		this.createDb();
 	}
 
 	/**
@@ -142,13 +178,16 @@ export class LocalDb {
 	 */
 	public getKeys(): string[] {
 		const keys: string[] = [];
-		this.LOCAL_DB.getIndexes().then((result: { indexes: any[] }) => {
-			result.indexes.forEach((index: { name: string }) => {
-				if (index.name.startsWith(this.LOCAL_DB_KEY)) {
-					keys.push(index.name.replace(this.LOCAL_DB_KEY, ""));
-				}
+		try {
+			const db = JSON.parse(
+				window.localStorage.getItem(this.LOCAL_DB_STORAGE_KEY)!
+			);
+			db.forEach((dbEntry: DbEntry) => {
+				keys.push(dbEntry.id);
 			});
-		});
+		} catch (error) {
+			this.createDb();
+		}
 		return keys;
 	}
 }

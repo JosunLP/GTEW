@@ -1,4 +1,4 @@
-import { GlobalErrorHandler } from './classes/globalErrorHandler';
+import { GlobalErrorHandler } from "./classes/globalErrorHandler";
 
 /**
  * @fileoverview GTEW - Global TypeScript Error Wrapper
@@ -39,3 +39,10 @@ export default class GTEW {
 		globalErrorHandler.init();
 	}
 }
+
+export { GTEW as GlobalTypeScriptWrittenErrorHandlerWrapper };
+export { GTEW as GTEW };
+export { GTEW as Gtew };
+export { GTEW as gtew };
+export { GTEW as g };
+export { GTEW as G };
