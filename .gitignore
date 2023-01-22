@@ -745,5 +745,6 @@ FodyWeavers.xsd
 
 package-lock.json
 dist
-tests/*.js
+tests/backend/*.js
+tests/frontend/*.js
 .vscode

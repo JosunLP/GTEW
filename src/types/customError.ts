@@ -1,4 +1,4 @@
-type GtewError = {
+export type GtewError = {
 	  message: string;
 	  filename: string;
 	  lineno: number;

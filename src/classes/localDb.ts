@@ -1,3 +1,4 @@
+//@ts-ignore
 import PouchDB from "pouchdb";
 
 /**
@@ -66,13 +67,13 @@ export class LocalDb {
 	 * @example
 	 * LocalDb.getInstance().get('key');
 	 */
-	public get(key: string): string	 {
+	public get(key: string): string {
 		let result: string = "";
 		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
 			.catch(() => {
 				return { value: "" };
 			})
-			.then((doc) => {
+			.then((doc: any) => {
 				// @ts-ignore
 				result = doc.value;
 			});
@@ -92,7 +93,7 @@ export class LocalDb {
 	 */
 	public set(key: string, value: string): void {
 		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
-			.then((doc) => {
+			.then((doc: any) => {
 				this.LOCAL_DB.remove(doc);
 			})
 			.catch();
@@ -115,7 +116,7 @@ export class LocalDb {
 	 */
 	public remove(key: string): void {
 		this.LOCAL_DB.get(this.LOCAL_DB_KEY + key)
-			.then((doc) => {
+			.then((doc: any) => {
 				this.LOCAL_DB.remove(doc);
 			})
 			.catch();
@@ -141,8 +142,8 @@ export class LocalDb {
 	 */
 	public getKeys(): string[] {
 		const keys: string[] = [];
-		this.LOCAL_DB.getIndexes().then((result) => {
-			result.indexes.forEach((index) => {
+		this.LOCAL_DB.getIndexes().then((result: { indexes: any[] }) => {
+			result.indexes.forEach((index: { name: string }) => {
 				if (index.name.startsWith(this.LOCAL_DB_KEY)) {
 					keys.push(index.name.replace(this.LOCAL_DB_KEY, ""));
 				}

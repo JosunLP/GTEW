@@ -1,14 +1,16 @@
 {
   "name": "gtew",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Global, TypeScript written, Error Handler Wrapper",
   "main": "./dist/gtew.js",
   "private": true,
   "type": "module",
   "types": "./dist/gtew.d.ts",
   "scripts": {
-    "test": "tsc ./tests/error.test.ts --outDir ./tests/ --target esnext --module esnext && node ./tests/error.test.js",
-    "build": "tsc"
+    "build": "npm run build-main && npm run build-test",
+    "build-test": "tsc ./tests/backend/error.test.ts --outDir ./tests/backend/ --target esnext --module esnext && tsc ./tests/frontend/error.ts --outDir ./tests/frontend/ --target esnext --module esnext",
+    "build-main": "webpack --config ./webpack.config.cjs",
+    "run-test": "node ./tests/backend/error.test.js"
   },
   "repository": {
     "type": "git",
@@ -29,11 +31,15 @@
   },
   "homepage": "https://github.com/JosunLP/GTEW#readme",
   "devDependencies": {
-    "@types/node": "^18.11.17",
     "@types/pouchdb": "^6.4.0",
-    "typescript": "^4.9.4"
+    "@types/node": "^18.11.18",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "pouchdb": "^8.0.0"
+    "pouchdb": "^8.0.0",
+    "simple-toast-messages": "^1.0.2"
   }
 }

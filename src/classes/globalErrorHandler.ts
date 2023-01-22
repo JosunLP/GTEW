@@ -1,4 +1,6 @@
-import { BrowserLogHandler } from './browserLogHandler.js';
+import { BrowserLogHandler } from './browserLogHandler';
+import { T } from "simple-toast-messages";
+import { GtewError } from '../types/customError';
 
 /**
  * Global error handler
@@ -77,6 +79,8 @@ export class GlobalErrorHandler {
 		if (typeof window !== "undefined") {
 			window.onerror = ((errorEvent: ErrorEvent): void => {
 				this.handleError(errorEvent);
+				const msg = T.getInstance();
+				msg.error("An error occurred: "+ errorEvent.message, 5000);
 			}) as OnErrorEventHandler;
 		} else {
 			process.on("uncaughtException", (error: Error): void => {

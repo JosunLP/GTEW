@@ -1,4 +1,4 @@
-import { GlobalErrorHandler } from './classes/globalErrorHandler.js';
+import { GlobalErrorHandler } from './classes/globalErrorHandler';
 
 /**
  * @fileoverview GTEW - Global TypeScript Error Wrapper

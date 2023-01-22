@@ -1,5 +1,5 @@
-import { Logfile } from "./../models/logfile.js";
-import { LocalDb } from "./localDb.js";
+import { Logfile } from "./../models/logfile";
+import { LocalDb } from "./localDb";
 
 /**
  * Browser log handler
